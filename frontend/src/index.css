@@ -1,0 +1,86 @@
+:root {
+  /* === Blue theme tokens === */
+  --bg-main: #0b1220;          /* dark blue background */
+  --bg-card: #111a2e;          /* card background */
+  --bg-card-soft: #16213b;     /* inputs / soft areas */
+  --accent-blue: #4f8cff;      /* primary accent */
+  --accent-blue-soft: rgba(79, 140, 255, 0.18);
+  --border-soft: rgba(255, 255, 255, 0.10);
+
+  --text-main: rgba(255, 255, 255, 0.92);
+  --text-muted: rgba(255, 255, 255, 0.70);
+
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* keep it consistently dark (cleaner than auto light/dark) */
+  color-scheme: dark;
+  color: var(--text-main);
+  background-color: var(--bg-main);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* WICHTIG: volle Höhe/Breite für Layout + Leaflet */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+body {
+  display: block; /* NICHT flex */
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg-main);
+}
+
+/* Links */
+a {
+  font-weight: 600;
+  color: var(--accent-blue);
+  text-decoration: none;
+}
+a:hover {
+  opacity: 0.9;
+}
+
+/* Headings */
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+/* Buttons (blue, modern, soft) */
+button {
+  border-radius: 12px;
+  border: 1px solid var(--border-soft);
+  padding: 0.7em 1.2em;
+  font-size: 1em;
+  font-weight: 600;
+  font-family: inherit;
+  background: var(--accent-blue-soft);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.05s ease;
+}
+
+button:hover {
+  background: rgba(79, 140, 255, 0.28);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 3px solid rgba(79, 140, 255, 0.35);
+  outline-offset: 2px;
+}
