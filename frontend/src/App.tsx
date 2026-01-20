@@ -3,6 +3,7 @@ import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaf
 import type { LeafletMouseEvent } from "leaflet";
 import L from "leaflet";
 import "./App.css";
+import { translations, categoryTranslations, type Language } from "./translations";
 
 type Report = {
   id: number;
@@ -14,12 +15,12 @@ type Report = {
   confidence: number;
   source: string;
   is_corrected: boolean;
-  // if you later add these in backend output, it will still work:
   model_name?: string;
   model_version?: string;
 };
 
 const API_BASE = "http://127.0.0.1:8000";
+const CATEGORIES = ["Hindernis", "Infrastrukturproblem", "Gefahrenstelle", "Positives Feedback"];
 
 function ClickToSetMarker({ onPick }: { onPick: (lat: number, lng: number) => void }) {
   useMapEvents({
@@ -67,36 +68,49 @@ function makeDotIcon(color: string) {
 }
 
 export default function App() {
+  const [language, setLanguage] = useState<Language>('de');
   const [text, setText] = useState("");
   const [picked, setPicked] = useState<{ lat: number; lng: number } | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  
+  // ✨ NEW: C1 - Filter & Search state
+  const [filterCategory, setFilterCategory] = useState<string>("");
+  const [searchText, setSearchText] = useState<string>("");
+  const [tempSearch, setTempSearch] = useState<string>("");
 
+  const t = translations[language];
+  const ct = categoryTranslations[language];
   const center: [number, number] = [48.2082, 16.3738]; // Wien
 
+  // ✨ UPDATED: loadReports with filter & search
   async function loadReports() {
-    const res = await fetch(`${API_BASE}/reports`);
+    const params = new URLSearchParams();
+    if (filterCategory) params.append("category", filterCategory);
+    if (searchText) params.append("search", searchText);
+    
+    const url = `${API_BASE}/reports${params.toString() ? '?' + params.toString() : ''}`;
+    const res = await fetch(url);
     const data = (await res.json()) as Report[];
-
-    // Backend already hides Spam by default, but keep this as a safety-net:
     setReports(data.filter((r) => r.category !== "Spam"));
   }
 
+  // ✨ UPDATED: useEffect with filter dependencies
   useEffect(() => {
-    loadReports().catch(() => setError("Reports konnten nicht geladen werden."));
-  }, []);
+    loadReports().catch(() => setError(t.errorLoadReports));
+  }, [filterCategory, searchText]); // Reload when filters change
 
   async function submit() {
     setError(null);
 
     const trimmed = text.trim();
     if (trimmed.length < 5 || trimmed.length > 150) {
-      setError("Text muss zwischen 5 und 150 Zeichen haben.");
+      setError(t.errorLength);
       return;
     }
     if (!picked) {
-      setError("Bitte zuerst eine Position auf der Karte auswählen.");
+      setError(t.errorNoLocation);
       return;
     }
 
@@ -115,18 +129,42 @@ export default function App() {
 
       if (!res.ok) {
         const msg = await res.json().catch(() => null);
-        setError(msg?.detail ?? "Senden fehlgeschlagen.");
+        setError(msg?.detail ?? t.errorSendFailed);
         return;
       }
 
       setText("");
       await loadReports();
     } catch {
-      setError("Backend nicht erreichbar (läuft FastAPI auf Port 8000?).");
+      setError(t.errorBackendUnreachable);
     } finally {
       setBusy(false);
     }
   }
+  
+  // ✨ NEW: Helper functions for filter & search
+  function handleSearch() {
+    setSearchText(tempSearch);
+  }
+  
+  function clearFilters() {
+    setFilterCategory("");
+    setSearchText("");
+    setTempSearch("");
+  }
+  
+  // ✨ NEW: C3 - CSV Export
+  function exportCSV() {
+    const params = new URLSearchParams();
+    if (filterCategory) params.append("category", filterCategory);
+    
+    const url = `${API_BASE}/reports/export${params.toString() ? '?' + params.toString() : ''}`;
+    window.open(url, '_blank');
+  }
+
+  const toggleLanguage = () => {
+    setLanguage(prev => prev === 'en' ? 'de' : 'en');
+  };
 
   const CardStyle: React.CSSProperties = {
     border: "1px solid var(--border-soft)",
@@ -135,6 +173,8 @@ export default function App() {
     padding: 16,
     boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
   };
+
+  const activeFilters = filterCategory || searchText;
 
   return (
     <div
@@ -159,12 +199,37 @@ export default function App() {
         }}
       >
         <div>
-          <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: 0.2 }}>RideAware</div>
-          <div style={{ fontSize: 12, color: "var(--text-muted)" }}>Near-miss & Hazard Reporting (Prototype)</div>
+          <div style={{ fontSize: 20, fontWeight: 800, letterSpacing: 0.2 }}>{t.appTitle}</div>
+          <div style={{ fontSize: 12, color: "var(--text-muted)" }}>{t.appSubtitle}</div>
         </div>
 
-        <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-          Backend: <span style={{ color: "var(--text-main)" }}>{API_BASE}</span>
+        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+          {/* Language Toggle Button */}
+          <button
+            onClick={toggleLanguage}
+            style={{
+              padding: "8px 16px",
+              borderRadius: 12,
+              border: "1px solid var(--border-soft)",
+              background: "rgba(79,140,255,0.15)",
+              color: "var(--text-main)",
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              transition: "all 0.2s ease",
+            }}
+            title={language === 'en' ? 'Switch to German' : 'Zu Englisch wechseln'}
+          >
+            <span style={{ fontSize: 16 }}>🌐</span>
+            {language === 'en' ? 'DE' : 'EN'}
+          </button>
+
+          <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+            {t.backend}: <span style={{ color: "var(--text-main)" }}>{API_BASE}</span>
+          </div>
         </div>
       </header>
 
@@ -173,19 +238,19 @@ export default function App() {
         {/* Form card */}
         <section style={CardStyle}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800 }}>Neue Meldung</h3>
+            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800 }}>{t.newReport}</h3>
             <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-              {picked ? `📍 ${picked.lat.toFixed(5)}, ${picked.lng.toFixed(5)}` : "📍 auf Karte klicken"}
+              {picked ? `📍 ${picked.lat.toFixed(5)}, ${picked.lng.toFixed(5)}` : `📍 ${t.clickOnMap}`}
             </div>
           </div>
 
-          <div style={{ marginTop: 10, fontSize: 12, color: "var(--text-muted)" }}>Meldung (5–150 Zeichen)</div>
+          <div style={{ marginTop: 10, fontSize: 12, color: "var(--text-muted)" }}>{t.reportLabel}</div>
 
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={4}
-            placeholder="z. B. Glas auf dem Radweg bei der Kreuzung …"
+            placeholder={t.reportPlaceholder}
             style={{
               width: "100%",
               marginTop: 8,
@@ -229,30 +294,135 @@ export default function App() {
               cursor: busy ? "not-allowed" : "pointer",
             }}
           >
-            {busy ? "Senden…" : "Meldung absenden"}
+            {busy ? t.submitting : t.submitButton}
           </button>
 
           <div style={{ marginTop: 10, fontSize: 12, color: "var(--text-muted)" }}>
-            Tipp: Erst auf die Karte klicken, dann absenden. Marker erscheinen direkt auf der Map.
+            {t.tipText}
           </div>
         </section>
 
-        {/* Reports card */}
+        {/* ✨ UPDATED: Reports card with Filter & Search (C1) */}
         <section style={{ ...CardStyle, overflow: "hidden" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800 }}>Letzte Meldungen</h3>
-            <div style={{ fontSize: 12, color: "var(--text-muted)" }}>{reports.length} Einträge</div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800 }}>{t.latestReports}</h3>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <div style={{ fontSize: 12, color: "var(--text-muted)" }}>{reports.length} {t.entries}</div>
+              {/* ✨ NEW: C3 - CSV Export Button */}
+              <button
+                onClick={exportCSV}
+                style={{
+                  padding: "4px 10px",
+                  fontSize: 11,
+                  borderRadius: 8,
+                  border: "1px solid var(--border-soft)",
+                  background: "rgba(45,212,191,0.15)",
+                  color: "var(--text-main)",
+                  cursor: "pointer",
+                }}
+                title={language === 'en' ? 'Export as CSV' : 'Als CSV exportieren'}
+              >
+                📥 CSV
+              </button>
+            </div>
           </div>
 
-          <div style={{ marginTop: 10, maxHeight: 190, overflow: "auto", paddingRight: 6 }}>
+          {/* ✨ NEW: Filter & Search UI */}
+          <div style={{ 
+            display: "flex", 
+            gap: 8, 
+            marginBottom: 10,
+            flexWrap: "wrap"
+          }}>
+            {/* Category Filter Dropdown */}
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              style={{
+                flex: 1,
+                minWidth: 120,
+                padding: "6px 10px",
+                borderRadius: 8,
+                border: "1px solid var(--border-soft)",
+                background: "var(--bg-card-soft)",
+                color: "var(--text-main)",
+                fontSize: 11,
+              }}
+            >
+              <option value="">{language === 'en' ? 'All Categories' : 'Alle Kategorien'}</option>
+              {CATEGORIES.map(cat => (
+                <option key={cat} value={cat}>{ct[cat as keyof typeof ct]}</option>
+              ))}
+            </select>
+
+            {/* Search Input */}
+            <div style={{ flex: 1, display: "flex", gap: 4 }}>
+              <input
+                type="text"
+                value={tempSearch}
+                onChange={(e) => setTempSearch(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                placeholder={language === 'en' ? 'Search...' : 'Suchen...'}
+                style={{
+                  flex: 1,
+                  padding: "6px 10px",
+                  borderRadius: 8,
+                  border: "1px solid var(--border-soft)",
+                  background: "var(--bg-card-soft)",
+                  color: "var(--text-main)",
+                  fontSize: 11,
+                  outline: "none",
+                }}
+              />
+              <button
+                onClick={handleSearch}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: 8,
+                  border: "1px solid var(--border-soft)",
+                  background: "rgba(79,140,255,0.18)",
+                  color: "var(--text-main)",
+                  fontSize: 11,
+                  cursor: "pointer",
+                }}
+              >
+                🔍
+              </button>
+            </div>
+
+            {/* Clear Filters Button */}
+            {activeFilters && (
+              <button
+                onClick={clearFilters}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: 8,
+                  border: "1px solid var(--border-soft)",
+                  background: "rgba(255,90,95,0.15)",
+                  color: "var(--text-main)",
+                  fontSize: 11,
+                  cursor: "pointer",
+                }}
+                title={language === 'en' ? 'Clear filters' : 'Filter löschen'}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <div style={{ maxHeight: 150, overflow: "auto", paddingRight: 6 }}>
             {reports.length === 0 ? (
               <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                Noch keine Meldungen. Erstelle eine neue Meldung über das Formular.
+                {activeFilters 
+                  ? (language === 'en' ? 'No reports match your filters.' : 'Keine Meldungen entsprechen den Filtern.')
+                  : t.noReports
+                }
               </div>
             ) : (
               <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                 {reports.map((r) => {
                   const col = markerColor(r.category);
+                  const translatedCategory = ct[r.category as keyof typeof ct] || r.category;
                   return (
                     <li
                       key={r.id}
@@ -273,7 +443,7 @@ export default function App() {
                               display: "inline-block",
                             }}
                           />
-                          {r.category}{" "}
+                          {translatedCategory}{" "}
                           <span style={{ color: "var(--text-muted)", fontWeight: 600 }}>
                             ({r.confidence.toFixed(2)})
                           </span>
@@ -328,22 +498,22 @@ export default function App() {
               backdropFilter: "blur(6px)",
             }}
           >
-            <div style={{ fontWeight: 800, marginBottom: 6 }}>Legende</div>
+            <div style={{ fontWeight: 800, marginBottom: 6 }}>{t.legend}</div>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Hindernis"), display: "inline-block" }} />
-              Hindernis
+              {t.obstacle}
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
               <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Gefahrenstelle"), display: "inline-block" }} />
-              Gefahrenstelle
+              {t.dangerSpot}
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
               <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Infrastrukturproblem"), display: "inline-block" }} />
-              Infrastrukturproblem
+              {t.infrastructureProblem}
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
               <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Positives Feedback"), display: "inline-block" }} />
-              Positives Feedback
+              {t.positiveFeedback}
             </div>
           </div>
 
@@ -354,19 +524,22 @@ export default function App() {
 
             {picked && (
               <Marker position={[picked.lat, picked.lng]} icon={makeDotIcon("#4f8cff")}>
-                <Popup>Ausgewählte Position</Popup>
+                <Popup>{t.selectedPosition}</Popup>
               </Marker>
             )}
 
-            {reports.map((r) => (
-              <Marker key={r.id} position={[r.latitude, r.longitude]} icon={makeDotIcon(markerColor(r.category))}>
-                <Popup>
-                  <strong>{r.category}</strong>
-                  <br />
-                  {r.text}
-                </Popup>
-              </Marker>
-            ))}
+            {reports.map((r) => {
+              const translatedCategory = ct[r.category as keyof typeof ct] || r.category;
+              return (
+                <Marker key={r.id} position={[r.latitude, r.longitude]} icon={makeDotIcon(markerColor(r.category))}>
+                  <Popup>
+                    <strong>{translatedCategory}</strong>
+                    <br />
+                    {r.text}
+                  </Popup>
+                </Marker>
+              );
+            })}
           </MapContainer>
         </section>
       </div>

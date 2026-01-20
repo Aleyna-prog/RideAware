@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import csv
+from io import StringIO
 from datetime import datetime, timezone
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import Boolean, Column, DateTime, Float, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -196,14 +199,38 @@ def create_report(payload: ReportCreate):
 
 
 @app.get("/reports", response_model=List[ReportOut])
-def list_reports(include_spam: bool = False):
+def list_reports(
+    include_spam: bool = False,
+    category: Optional[str] = Query(None, description="Filter by category (C1)"),
+    search: Optional[str] = Query(None, description="Search in report text (C1)"),
+):
+    """
+    SRS C1: Filter and search function
+    
+    Examples:
+    - /reports?category=Hindernis
+    - /reports?search=glas
+    - /reports?category=Gefahrenstelle&search=kreuzung
+    """
     db = SessionLocal()
     try:
         q = db.query(ReportDB)
+        
         if not include_spam:
             q = q.filter(ReportDB.category != "Spam")
+        
+        # C1: Filter by category
+        if category and category in LABELS:
+            q = q.filter(ReportDB.category == category)
+        
+        # C1: Search in text
+        if search:
+            search_term = f"%{search.strip()}%"
+            q = q.filter(ReportDB.text.ilike(search_term))
+        
         q = q.order_by(ReportDB.id.desc())
         items = q.all()
+        
         return [
             ReportOut(
                 id=r.id,
@@ -220,5 +247,72 @@ def list_reports(include_spam: bool = False):
             )
             for r in items
         ]
+    finally:
+        db.close()
+
+
+@app.get("/reports/export")
+def export_reports_csv(
+    include_spam: bool = False,
+    category: Optional[str] = Query(None, description="Filter by category"),
+):
+    """
+    SRS C3: Export reports as CSV
+    
+    Downloads all reports (or filtered subset) as CSV file.
+    
+    Examples:
+    - /reports/export (all reports)
+    - /reports/export?category=Hindernis (only obstacles)
+    """
+    db = SessionLocal()
+    try:
+        q = db.query(ReportDB)
+        
+        if not include_spam:
+            q = q.filter(ReportDB.category != "Spam")
+        
+        if category and category in LABELS:
+            q = q.filter(ReportDB.category == category)
+        
+        q = q.order_by(ReportDB.id.desc())
+        items = q.all()
+        
+        # Create CSV in memory
+        output = StringIO()
+        writer = csv.writer(output)
+        
+        # Header
+        writer.writerow([
+            "id", "text", "latitude", "longitude", "timestamp",
+            "category", "confidence", "source", "model_name",
+            "model_version", "is_corrected"
+        ])
+        
+        # Data rows
+        for r in items:
+            writer.writerow([
+                r.id,
+                r.text,
+                r.latitude,
+                r.longitude,
+                r.timestamp.isoformat(),
+                r.category,
+                r.confidence,
+                r.source,
+                r.model_name,
+                r.model_version,
+                r.is_corrected,
+            ])
+        
+        output.seek(0)
+        
+        return StreamingResponse(
+            iter([output.getvalue()]),
+            media_type="text/csv",
+            headers={
+                "Content-Disposition": f"attachment; filename=rideaware_reports_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+            }
+        )
     finally:
         db.close()
