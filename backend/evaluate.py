@@ -17,7 +17,7 @@ def classify_text_baseline(text: str) -> tuple[str, float]:
     spam_keywords = [
         "http", "www", ".com", ".net", "buy", "free", "promo", "sale",
         "discount", "offer", "click", "subscribe", "abonnier", "follow",
-        "coupon", "deal", "limited", "win money", "get rich"
+        "coupon", "deal", "limited", "win money", "get rich", "werbung", "liebe", "ads"
     ]
     if any(k in t for k in spam_keywords):
         return "Spam", 0.90

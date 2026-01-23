@@ -5,6 +5,29 @@ import L from "leaflet";
 import "./App.css";
 import { translations, categoryTranslations, type Language } from "./translations";
 
+// ✅ N6: Theme Type
+type Theme = "light" | "dark";
+
+// ✅ N6: Theme Colors (CSS Variables)
+const themes = {
+  light: {
+    "--bg-main": "#f5f5f7",
+    "--bg-card": "#ffffff",
+    "--bg-card-soft": "#f9fafb",
+    "--text-main": "#1d1d1f",
+    "--text-muted": "#6e6e73",
+    "--border-soft": "#d2d2d7",
+  },
+  dark: {
+    "--bg-main": "#111827",
+    "--bg-card": "#111a2e",
+    "--bg-card-soft": "#1a2332",
+    "--text-main": "#f3f4f6",
+    "--text-muted": "#9ca3af",
+    "--border-soft": "#27364f",
+  },
+};
+
 type Report = {
   id: number;
   text: string;
@@ -75,16 +98,35 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   
-  // ✨ NEW: C1 - Filter & Search state
+  // C1 - Filter & Search state
   const [filterCategory, setFilterCategory] = useState<string>("");
   const [searchText, setSearchText] = useState<string>("");
   const [tempSearch, setTempSearch] = useState<string>("");
+
+  // ✅ N6: Theme State (load from localStorage)
+  const [theme, setTheme] = useState<Theme>(() => {
+    const saved = localStorage.getItem("rideaware-theme");
+    return (saved as Theme) || "dark";
+  });
 
   const t = translations[language];
   const ct = categoryTranslations[language];
   const center: [number, number] = [48.2082, 16.3738]; // Wien
 
-  // ✨ UPDATED: loadReports with filter & search
+  // ✅ N6: Apply theme CSS variables
+  useEffect(() => {
+    const root = document.documentElement;
+    Object.entries(themes[theme]).forEach(([key, value]) => {
+      root.style.setProperty(key, value);
+    });
+    localStorage.setItem("rideaware-theme", theme);
+  }, [theme]);
+
+  // ✅ N6: Toggle theme function
+  function toggleTheme() {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  }
+
   async function loadReports() {
     const params = new URLSearchParams();
     if (filterCategory) params.append("category", filterCategory);
@@ -96,23 +138,35 @@ export default function App() {
     setReports(data.filter((r) => r.category !== "Spam"));
   }
 
-  // ✨ UPDATED: useEffect with filter dependencies
   useEffect(() => {
     loadReports().catch(() => setError(t.errorLoadReports));
-  }, [filterCategory, searchText]); // Reload when filters change
+  }, [filterCategory, searchText]);
 
   async function submit() {
+    console.log('🔍 Submit called');
+    console.log('📝 Text:', text);
+    console.log('📍 Picked:', picked);
+    
     setError(null);
 
     const trimmed = text.trim();
+    console.log('✂️ Trimmed length:', trimmed.length);
+    
+    // Validation 1: Text length
     if (trimmed.length < 5 || trimmed.length > 150) {
+      console.log('❌ Text validation failed!');
       setError(t.errorLength);
       return;
     }
-    if (!picked) {
+    
+    // Validation 2: Location picked
+    if (!picked || picked === null || picked === undefined) {
+      console.log('❌ Location validation failed!');
       setError(t.errorNoLocation);
       return;
     }
+    
+    console.log('✅ Validation passed, sending request...');
 
     setBusy(true);
     try {
@@ -130,19 +184,22 @@ export default function App() {
       if (!res.ok) {
         const msg = await res.json().catch(() => null);
         setError(msg?.detail ?? t.errorSendFailed);
+        console.log('❌ Backend error:', msg?.detail);
         return;
       }
 
+      console.log('✅ Report submitted successfully!');
       setText("");
+      setPicked(null); // Reset marker after successful submit
       await loadReports();
-    } catch {
+    } catch (err) {
+      console.error('❌ Network error:', err);
       setError(t.errorBackendUnreachable);
     } finally {
       setBusy(false);
     }
   }
   
-  // ✨ NEW: Helper functions for filter & search
   function handleSearch() {
     setSearchText(tempSearch);
   }
@@ -153,7 +210,7 @@ export default function App() {
     setTempSearch("");
   }
   
-  // ✨ NEW: C3 - CSV Export
+  // C3 - CSV Export
   function exportCSV() {
     const params = new URLSearchParams();
     if (filterCategory) params.append("category", filterCategory);
@@ -175,6 +232,12 @@ export default function App() {
   };
 
   const activeFilters = filterCategory || searchText;
+  
+  // Validation helper
+  const isFormValid = () => {
+    const trimmed = text.trim();
+    return trimmed.length >= 5 && trimmed.length <= 150 && picked !== null;
+  };
 
   return (
     <div
@@ -185,6 +248,7 @@ export default function App() {
         flexDirection: "column",
         background: "var(--bg-main)",
         color: "var(--text-main)",
+        transition: "background 0.3s ease, color 0.3s ease",
       }}
     >
       {/* Header */}
@@ -204,6 +268,27 @@ export default function App() {
         </div>
 
         <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+          {/* ✅ N6: Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            style={{
+              padding: "8px 16px",
+              borderRadius: 12,
+              border: "1px solid var(--border-soft)",
+              background: theme === "dark" ? "rgba(255,200,100,0.15)" : "rgba(79,140,255,0.15)",
+              color: "var(--text-main)",
+              cursor: "pointer",
+              fontSize: 18,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              transition: "all 0.2s ease",
+            }}
+            title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
+
           {/* Language Toggle Button */}
           <button
             onClick={toggleLanguage}
@@ -226,10 +311,6 @@ export default function App() {
             <span style={{ fontSize: 16 }}>🌐</span>
             {language === 'en' ? 'DE' : 'EN'}
           </button>
-
-          <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-            {t.backend}: <span style={{ color: "var(--text-main)" }}>{API_BASE}</span>
-          </div>
         </div>
       </header>
 
@@ -237,12 +318,7 @@ export default function App() {
       <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {/* Form card */}
         <section style={CardStyle}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800 }}>{t.newReport}</h3>
-            <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
-              {picked ? `📍 ${picked.lat.toFixed(5)}, ${picked.lng.toFixed(5)}` : `📍 ${t.clickOnMap}`}
-            </div>
-          </div>
+          <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800 }}>{t.newReport}</h3>
 
           <div style={{ marginTop: 10, fontSize: 12, color: "var(--text-muted)" }}>{t.reportLabel}</div>
 
@@ -282,16 +358,18 @@ export default function App() {
 
           <button
             onClick={submit}
-            disabled={busy}
+            disabled={busy || !isFormValid()}
             style={{
               marginTop: 12,
               width: "100%",
               padding: "10px 12px",
               borderRadius: 12,
               border: "1px solid var(--border-soft)",
-              background: busy ? "rgba(255,255,255,0.06)" : "rgba(79,140,255,0.22)",
+              background: (busy || !isFormValid()) ? "rgba(255,255,255,0.06)" : "rgba(79,140,255,0.22)",
               color: "var(--text-main)",
-              cursor: busy ? "not-allowed" : "pointer",
+              cursor: (busy || !isFormValid()) ? "not-allowed" : "pointer",
+              opacity: (busy || !isFormValid()) ? 0.5 : 1,
+              transition: "all 0.2s ease",
             }}
           >
             {busy ? t.submitting : t.submitButton}
@@ -302,13 +380,13 @@ export default function App() {
           </div>
         </section>
 
-        {/* ✨ UPDATED: Reports card with Filter & Search (C1) */}
+        {/* Reports card with Filter & Search */}
         <section style={{ ...CardStyle, overflow: "hidden" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
             <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800 }}>{t.latestReports}</h3>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <div style={{ fontSize: 12, color: "var(--text-muted)" }}>{reports.length} {t.entries}</div>
-              {/* ✨ NEW: C3 - CSV Export Button */}
+              {/* C3 - CSV Export Button */}
               <button
                 onClick={exportCSV}
                 style={{
@@ -327,7 +405,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* ✨ NEW: Filter & Search UI */}
+          {/* Filter & Search UI */}
           <div style={{ 
             display: "flex", 
             gap: 8, 
@@ -488,7 +566,7 @@ export default function App() {
               zIndex: 999,
               right: 16,
               top: 12,
-              background: "rgba(17, 26, 46, 0.92)",
+              background: theme === "dark" ? "rgba(17, 26, 46, 0.92)" : "rgba(255, 255, 255, 0.92)",
               border: "1px solid var(--border-soft)",
               borderRadius: 12,
               padding: "10px 12px",

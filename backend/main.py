@@ -52,7 +52,7 @@ Base.metadata.create_all(bind=engine)
 def classify_text_baseline(text: str) -> Tuple[str, float]:
     t = (text or "").lower()
 
-    spam_keywords = ["http", "www", ".com", ".net", "buy", "free", "promo", "sale", "discount"]
+    spam_keywords = ["http", "www", ".com", ".net", "buy", "free", "promo", "sale", "discount", "werbung", "liebe", "follow"]
     if any(k in t for k in spam_keywords):
         return "Spam", 0.90
 
