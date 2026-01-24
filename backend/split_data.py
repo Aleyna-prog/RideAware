@@ -1,10 +1,6 @@
 from pathlib import Path
 import pandas as pd
 
-# Option B (FINAL):
-# - train_pool.csv = wächst mit neuen Daten
-# - test.csv       = FIX (wird hier NICHT erstellt oder geändert)
-# - train_split.csv = nutzt 100 % des Pools fürs Training
 
 POOL_PATH = Path("data/train_pool.csv")
 OUT_TRAIN = Path("data/train_split.csv")
@@ -20,7 +16,7 @@ def main():
     df["text"] = df["text"].astype(str)
     df["label"] = df["label"].astype(str)
 
-    # Use the FULL training pool (no internal split)
+    
     df.to_csv(OUT_TRAIN, index=False, encoding="utf-8")
 
     print(f"Wrote train_split: {OUT_TRAIN} ({len(df)} rows)")

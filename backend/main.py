@@ -36,7 +36,7 @@ class ReportDB(Base):
     category = Column(String, nullable=False)
     confidence = Column(Float, nullable=False)
 
-    # SRS S1 (SHOULD): store model info + corrected flag
+    # store model info + corrected flag
     model_name = Column(String, nullable=False, default="unknown")
     model_version = Column(String, nullable=False, default="unknown")
     is_corrected = Column(Boolean, nullable=False, default=False)
