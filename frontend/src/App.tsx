@@ -34,7 +34,7 @@ type Report = {
   latitude: number;
   longitude: number;
   timestamp: string;
-  category: "Hindernis" | "Infrastrukturproblem" | "Gefahrenstelle" | "Positives Feedback" | "Spam" | string;
+  category: "Gefahrenstelle" | "Hindernis" | "Markierung oder Schild" | "Ampel" | "Lückenschluss" | string;
   confidence: number;
   source: string;
   is_corrected: boolean;
@@ -43,7 +43,7 @@ type Report = {
 };
 
 const API_BASE = "http://127.0.0.1:8000";
-const CATEGORIES = ["Hindernis", "Infrastrukturproblem", "Gefahrenstelle", "Positives Feedback"];
+const CATEGORIES = ["Gefahrenstelle", "Hindernis", "Markierung oder Schild", "Ampel", "Lückenschluss"];
 
 function ClickToSetMarker({ onPick }: { onPick: (lat: number, lng: number) => void }) {
   useMapEvents({
@@ -54,21 +54,21 @@ function ClickToSetMarker({ onPick }: { onPick: (lat: number, lng: number) => vo
   return null;
 }
 
-/** SRS label set -> stable colors */
+/** BA2 Kategorien -> Farben */
 function markerColor(category: string) {
   switch ((category ?? "").trim()) {
-    case "Hindernis":
-      return "#ff5a5f"; // red
     case "Gefahrenstelle":
+      return "#ff5a5f"; // rot
+    case "Hindernis":
       return "#ffb020"; // orange
-    case "Infrastrukturproblem":
+    case "Markierung oder Schild":
       return "#2dd4bf"; // teal
-    case "Positives Feedback":
-      return "#4f8cff"; // blue
-    case "Spam":
-      return "#94a3b8"; // grey (normally not shown)
+    case "Ampel":
+      return "#4f8cff"; // blau
+    case "Lückenschluss":
+      return "#a78bfa"; // lila
     default:
-      return "#a78bfa"; // fallback purple
+      return "#94a3b8"; // grau fallback
   }
 }
 
@@ -578,20 +578,24 @@ export default function App() {
           >
             <div style={{ fontWeight: 800, marginBottom: 6 }}>{t.legend}</div>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Hindernis"), display: "inline-block" }} />
-              {t.obstacle}
-            </div>
-            <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
               <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Gefahrenstelle"), display: "inline-block" }} />
               {t.dangerSpot}
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
-              <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Infrastrukturproblem"), display: "inline-block" }} />
-              {t.infrastructureProblem}
+              <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Hindernis"), display: "inline-block" }} />
+              {t.obstacle}
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
-              <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Positives Feedback"), display: "inline-block" }} />
-              {t.positiveFeedback}
+              <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Markierung oder Schild"), display: "inline-block" }} />
+              {t.signOrMarking}
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
+              <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Ampel"), display: "inline-block" }} />
+              {t.trafficLight}
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
+              <span style={{ width: 10, height: 10, borderRadius: 999, background: markerColor("Lückenschluss"), display: "inline-block" }} />
+              {t.missingConnection}
             </div>
           </div>
 
