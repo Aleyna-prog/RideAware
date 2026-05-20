@@ -1,3 +1,13 @@
+"""
+RideAware - Modelltraining (TF-IDF + Logistic Regression)
+
+Trainiert einen Textklassifikator auf den Trainingsdaten und speichert
+das Modell als .joblib Datei. Optional wird das Modell auf dem Testdatensatz
+ausgewertet, falls data/test.csv vorhanden ist.
+
+Aufruf: python train_model.py
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -25,6 +35,11 @@ MODEL_VERSION = "1.0"
 
 
 def load_csv(path: Path) -> pd.DataFrame:
+    """
+    Lädt eine CSV-Datei und stellt sicher, dass alle enthaltenen Labels
+    zu den definierten Kategorien gehören. Bei unbekannten Labels wird
+    ein ValueError geworfen.
+    """
     df = pd.read_csv(path)
     df["text"] = df["text"].astype(str)
     df["label"] = df["label"].astype(str)
@@ -38,6 +53,11 @@ def load_csv(path: Path) -> pd.DataFrame:
 
 
 def main():
+    """
+    Erstellt eine TF-IDF + Logistic Regression Pipeline und trainiert sie
+    auf den Daten aus train_split.csv. Das fertige Modell wird in
+    model/rideaware_model.joblib gespeichert.
+    """
     if not TRAIN_PATH.exists():
         raise FileNotFoundError(f"Missing {TRAIN_PATH}. Run split_data.py first.")
 

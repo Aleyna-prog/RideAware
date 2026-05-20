@@ -1,3 +1,12 @@
+"""
+RideAware - Baseline vs. ML Evaluation
+
+Vergleicht den regelbasierten Klassifikator mit dem trainierten ML-Modell
+auf dem Testdatensatz und gibt Accuracy, Macro-F1 und die Konfusionsmatrix aus.
+
+Aufruf: python main.py
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -12,6 +21,13 @@ LABELS = ["Gefahrenstelle", "Hindernis", "Markierung oder Schild", "Ampel", "Lü
 
 
 def classify_text_baseline(text: str) -> tuple[str, float]:
+    """
+    Regelbasierter Klassifikator basierend auf Schlüsselwortlisten.
+    Der Text wird in Kleinbuchstaben umgewandelt und dann gegen vordefinierte
+    Keyword-Listen der einzelnen Kategorien geprüft. Die erste Kategorie,
+    deren Keywords im Text vorkommen, wird zurückgegeben. Als Fallback wird
+    'Gefahrenstelle' mit niedriger Konfidenz zurückgegeben.
+    """
     t = (text or "").lower()
 
     gefahren_keywords = [
@@ -62,6 +78,7 @@ def classify_text_baseline(text: str) -> tuple[str, float]:
 
 
 def load_data() -> pd.DataFrame:
+    """Lädt den Testdatensatz aus data/test.csv und gibt ihn als DataFrame zurück."""
     if not DATA_PATH.exists():
         raise FileNotFoundError(f"Missing {DATA_PATH}. Run split_data.py first.")
     df = pd.read_csv(DATA_PATH)
@@ -71,6 +88,11 @@ def load_data() -> pd.DataFrame:
 
 
 def evaluate(name: str, predict_label_fn, df: pd.DataFrame) -> None:
+    """
+    Wertet einen Klassifikator auf dem übergebenen DataFrame aus.
+    Gibt Accuracy, Macro-F1, den Classification Report und die
+    Konfusionsmatrix in der Konsole aus.
+    """
     y_true = df["label"].tolist()
     y_pred = [predict_label_fn(t) for t in df["text"].tolist()]
 
@@ -94,6 +116,7 @@ def evaluate(name: str, predict_label_fn, df: pd.DataFrame) -> None:
 
 
 def main():
+    """Lädt die Testdaten und vergleicht den Baseline-Klassifikator mit dem ML-Modell."""
     df = load_data()
 
     baseline_pred = lambda text: classify_text_baseline(text)[0]

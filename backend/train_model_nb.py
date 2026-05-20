@@ -1,3 +1,13 @@
+"""
+RideAware - Modelltraining (TF-IDF + Naive Bayes)
+
+Trainiert ein Naive Bayes Modell als Vergleichsmodell zum Logistic Regression
+Ansatz. Das Modell wird separat gespeichert und kann mit compare_models.py
+ausgewertet werden.
+
+Aufruf: python train_model_nb.py
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -25,6 +35,10 @@ MODEL_VERSION = "1.0"
 
 
 def load_csv(path: Path) -> pd.DataFrame:
+    """
+    Lädt eine CSV-Datei und überprüft ob alle Labels zu den bekannten
+    Kategorien gehören. Wirft einen ValueError bei unbekannten Labels.
+    """
     df = pd.read_csv(path)
     df["text"] = df["text"].astype(str)
     df["label"] = df["label"].astype(str)
@@ -38,6 +52,10 @@ def load_csv(path: Path) -> pd.DataFrame:
 
 
 def main():
+    """
+    Trainiert ein Naive Bayes Modell (TF-IDF + MultinomialNB) auf den
+    Trainingsdaten und speichert es in model/rideaware_model_nb.joblib.
+    """
     if not TRAIN_PATH.exists():
         raise FileNotFoundError(f"Missing {TRAIN_PATH}. Run split_data.py first.")
 
@@ -88,7 +106,7 @@ def main():
 
     print(f"\nSaved model to: {MODEL_PATH}")
     print(f"Saved meta  to: {META_PATH}")
-    print(f"\n✅ Naive Bayes model trained successfully!")
+    print(f"\nNaive Bayes model trained successfully!")
     print(f"Model: {MODEL_NAME} v{MODEL_VERSION}")
 
 

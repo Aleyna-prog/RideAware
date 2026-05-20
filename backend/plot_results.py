@@ -49,30 +49,33 @@ STYLE = {
 # ─── Hilfsfunktionen ──────────────────────────────────────────────────────────
 
 def save_fig(fig: plt.Figure, name: str) -> None:
+    """Speichert eine matplotlib Figure als PNG-Datei im plots/ Ordner."""
     path = PLOTS_DIR / name
     fig.savefig(path, dpi=150, bbox_inches="tight")
-    print(f"  ✓ Gespeichert: {path}")
+    print(f"  Gespeichert: {path}")
 
 
 def load_experiment(model: str) -> pd.DataFrame | None:
+    """Lädt die Ergebnisse des Lernkurven-Experiments aus dem results/ Ordner."""
     path = RESULTS_DIR / f"label_experiment_{model}.csv"
     if not path.exists():
-        print(f"  ⚠️  {path} nicht gefunden.")
+        print(f"  {path} nicht gefunden.")
         print(f"      Führe zuerst aus:  python self_training.py --experiment --model {model}")
         return None
     df = pd.read_csv(path)
-    print(f"  ✓ Geladen: {path}  ({len(df)} Zeilen)")
+    print(f"  Geladen: {path}  ({len(df)} Zeilen)")
     return df
 
 
 def load_iterations(model: str) -> pd.DataFrame | None:
+    """Lädt den Iterationsverlauf des Self-Training-Experiments aus dem results/ Ordner."""
     path = RESULTS_DIR / f"self_training_iter_{model}.csv"
     if not path.exists():
-        print(f"  ⚠️  {path} nicht gefunden.")
+        print(f"  {path} nicht gefunden.")
         print(f"      Führe zuerst aus:  python self_training.py --labeled 100 --model {model}")
         return None
     df = pd.read_csv(path)
-    print(f"  ✓ Geladen: {path}  ({len(df)} Zeilen)")
+    print(f"  Geladen: {path}  ({len(df)} Zeilen)")
     return df
 
 
@@ -263,6 +266,13 @@ def plot_bar_comparison(df: pd.DataFrame, model: str) -> None:
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
+    """
+    Erstellt alle Visualisierungen basierend auf den Experimentergebnissen.
+    Unterstützt drei Plot-Typen:
+      - learning_curve: Lernkurven Supervised vs. Semi-Supervised
+      - iterations: F1/Accuracy-Verlauf pro Self-Training Iteration
+      - bar: Balkendiagramm für den direkten Vergleich
+    """
     parser = argparse.ArgumentParser(description="RideAware BA2 – Plots")
     parser.add_argument("--type",  type=str, default="all",
                         choices=["all", "learning_curve", "iterations", "bar"],
@@ -294,8 +304,7 @@ def main():
             print("Erstelle Iterationsverlauf...")
             plot_iterations(df_iter, args.model)
 
-    print(f"\n✅ Alle Plots gespeichert in: {PLOTS_DIR}/")
-    print("   Diese Grafiken kannst du direkt in deine BA einbauen!")
+    print(f"\nAlle Plots gespeichert in: {PLOTS_DIR}/")
 
 
 if __name__ == "__main__":

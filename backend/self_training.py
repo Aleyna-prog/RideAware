@@ -36,13 +36,18 @@ RESULTS_DIR.mkdir(exist_ok=True)
 
 
 def print_header(title: str) -> None:
+    """Gibt einen formatierten Abschnittstitel in der Konsole aus."""
     print("\n" + "=" * 70)
     print(title)
     print("=" * 70)
 
 
 def subsample_labeled(df: pd.DataFrame, n_labeled: int) -> pd.DataFrame:
-    """Stratifiziertes Subsampling aus einem DataFrame."""
+    """
+    Wählt n_labeled Beispiele stratifiziert aus dem DataFrame aus, sodass
+    alle Klassen möglichst gleichmäßig vertreten sind. Falls n_labeled größer
+    als der Datensatz ist, wird der vollständige Datensatz zurückgegeben.
+    """
     if n_labeled >= len(df):
         return df.copy()
     result = (
@@ -58,8 +63,9 @@ def subsample_labeled(df: pd.DataFrame, n_labeled: int) -> pd.DataFrame:
 
 
 def load_unlabeled(path: Path) -> list[str]:
+    """Lädt ungelabelte Texte aus einer CSV-Datei für das Self-Training."""
     if not path.exists():
-        print(f"  ⚠️  {path} nicht gefunden – kein ungelabeltes Material.")
+        print(f"  {path} nicht gefunden – kein ungelabeltes Material.")
         return []
     df = pd.read_csv(path)
     df["text"] = df["text"].astype(str)
@@ -67,6 +73,11 @@ def load_unlabeled(path: Path) -> list[str]:
 
 
 def make_pipeline(model_type: str = "logreg") -> Pipeline:
+    """
+    Erstellt eine sklearn Pipeline mit TF-IDF Vektorisierung und dem
+    gewählten Klassifikator. Unterstützt Logistic Regression ('logreg')
+    und Naive Bayes ('nb').
+    """
     clf = (
         LogisticRegression(max_iter=2000, class_weight="balanced")
         if model_type == "logreg"
@@ -79,6 +90,7 @@ def make_pipeline(model_type: str = "logreg") -> Pipeline:
 
 
 def evaluate(model, X_test, y_test, label) -> dict:
+    """Bewertet das Modell auf den Testdaten und gibt Accuracy und Macro-F1 zurück."""
     preds = model.predict(X_test)
     acc   = accuracy_score(y_test, preds)
     f1m   = f1_score(y_test, preds, average="macro", zero_division=0)
@@ -90,6 +102,13 @@ def self_training(
     X_labeled, y_labeled, X_unlabeled, X_test, y_test,
     model_type="logreg", n_iterations=5, threshold=0.85, verbose=True,
 ) -> list[dict]:
+    """
+    Implementiert den Self-Training Algorithmus (Semi-Supervised Learning).
+    In jeder Iteration wird das Modell neu trainiert und auf den ungelabelten
+    Daten angewendet. Beispiele, bei denen die Konfidenz den Schwellenwert
+    überschreitet, werden als Pseudo-Labels dem Trainingsset hinzugefügt.
+    Das gibt zurück wie sich Accuracy und F1 pro Iteration entwickeln.
+    """
     results  = []
     X_train  = list(X_labeled)
     y_train  = list(y_labeled)
@@ -113,7 +132,7 @@ def self_training(
         })
 
         if not X_pool:
-            print("  ℹ️  Kein ungelabeltes Material mehr.")
+            print("  Kein ungelabeltes Material mehr.")
             results.append(metrics)
             break
 
@@ -127,7 +146,7 @@ def self_training(
             print(f"  Konfidente Pseudo-Labels: {n_added} / {len(X_pool)}")
 
         if n_added == 0:
-            print("  ⚠️  Keine konfidenziellen Pseudo-Labels – stoppe.")
+            print("  Keine konfidenziellen Pseudo-Labels – stoppe.")
             results.append(metrics)
             break
 
@@ -155,6 +174,12 @@ def run_label_size_experiment(
     df_pool, X_unlabeled, X_test, y_test,
     label_sizes, model_type="logreg", n_iterations=5, threshold=0.85,
 ) -> pd.DataFrame:
+    """
+    Führt das Lernkurven-Experiment durch. Für jede Labelmenge in label_sizes
+    wird zuerst ein rein überwachtes Modell (Supervised Baseline) trainiert,
+    danach Self-Training angewendet. Die Ergebnisse werden als DataFrame
+    zurückgegeben und können mit plot_results.py visualisiert werden.
+    """
     all_rows = []
 
     for n in label_sizes:
@@ -200,12 +225,17 @@ def run_label_size_experiment(
                 "f1_macro":  last["f1_macro"],
             })
         else:
-            print("  ⚠️  Keine ungelabelten Daten – Semi-Supervised übersprungen.")
+            print("  Keine ungelabelten Daten – Semi-Supervised übersprungen.")
 
     return pd.DataFrame(all_rows)
 
 
 def main():
+    """
+    Einstiegspunkt für das Self-Training Skript. Unterstützt zwei Modi:
+    - Standard: Self-Training mit der gesamten Trainingsdatenmenge (oder --labeled N)
+    - Experiment (--experiment): Lernkurven-Experiment über verschiedene Labelmengen
+    """
     parser = argparse.ArgumentParser(description="RideAware BA2 – Self-Training")
     parser.add_argument("--labeled",    type=int,   default=None)
     parser.add_argument("--iterations", type=int,   default=5)
@@ -218,12 +248,12 @@ def main():
     print_header("RIDEAWARE BA2 – SELF-TRAINING")
 
     if not TRAIN_POOL_PATH.exists():
-        print(f"\n❌ {TRAIN_POOL_PATH} nicht gefunden.")
+        print(f"\n{TRAIN_POOL_PATH} nicht gefunden.")
         print("   Führe zuerst init_data_splits.py aus.")
         return
 
     if not TEST_PATH.exists():
-        print(f"\n❌ {TEST_PATH} nicht gefunden.")
+        print(f"\n{TEST_PATH} nicht gefunden.")
         return
 
     df_pool = pd.read_csv(TRAIN_POOL_PATH)
@@ -262,7 +292,7 @@ def main():
 
         print_header("ERGEBNISSE")
         print(results_df.to_string(index=False))
-        print(f"\n✅ Ergebnisse gespeichert: {out_path}")
+        print(f"\nErgebnisse gespeichert: {out_path}")
         print("   Tipp: Führe plot_results.py aus um Lernkurven zu generieren.")
 
     else:
@@ -281,7 +311,7 @@ def main():
 
         out_path = RESULTS_DIR / f"self_training_iter_{args.model}.csv"
         pd.DataFrame(results).to_csv(out_path, index=False)
-        print(f"\n✅ Iterationsverlauf gespeichert: {out_path}")
+        print(f"\nIterationsverlauf gespeichert: {out_path}")
 
 
 if __name__ == "__main__":

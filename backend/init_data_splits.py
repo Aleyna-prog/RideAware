@@ -1,12 +1,14 @@
 """
-RideAware BA2 - Datensatz aufteilen
+RideAware - Datensatz aufteilen
 
-Liest RideAware_Dataset_clean.csv und erstellt:
-  - data/train_pool.csv  (~75% fuer Training)
-  - data/test.csv        (~25% fuer Evaluation, nur echte Daten!)
+Liest den bereinigten Datensatz (RideAware_Dataset_clean.csv) und teilt ihn
+stratifiziert in Trainings- und Testdaten auf:
+  - data/train_pool.csv  (~75% fuer Training und Semi-Supervised Experimente)
+  - data/test.csv        (~25% fuer Evaluation, nur echte Meldungen!)
 
-Usage:
-    python init_data_splits.py
+Das Testset bleibt waehrend aller Experimente unveraendert.
+
+Aufruf: python init_data_splits.py
 """
 
 from pathlib import Path
@@ -24,6 +26,11 @@ RANDOM_STATE = 42
 
 
 def main():
+    """
+    Liest RideAware_Dataset_clean.csv und teilt ihn mit stratifiziertem
+    Train-Test-Split in 75% Trainingspool und 25% Testset auf. Die Stratifizierung
+    stellt sicher, dass alle Kategorien in beiden Splits gleichmaessig vertreten sind.
+    """
     if not IN_PATH.exists():
         raise FileNotFoundError(
             f"Datei nicht gefunden: {IN_PATH}\n"

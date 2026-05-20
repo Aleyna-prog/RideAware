@@ -29,6 +29,15 @@ LABELS = [
 # ─── Preprocessing ────────────────────────────────────────────────────────────
 
 def preprocess(text: str, max_sentences: int = 3) -> str:
+    """
+    Bereinigt einen Meldungstext vor der Klassifikation. Folgende Schritte
+    werden nacheinander angewendet:
+      1. Header entfernen ("Name schrieb am Datum:")
+      2. Foto- und Bildhinweise in Klammern entfernen
+      3. URLs entfernen
+      4. Mehrfache Leerzeichen normalisieren
+      5. Text auf maximal 3 Sätze kürzen
+    """
     if not text or not isinstance(text, str):
         return ""
 
@@ -62,12 +71,17 @@ def preprocess(text: str, max_sentences: int = 3) -> str:
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
+    """
+    Liest den Rohdatensatz (RideAware_Dataset.csv), wendet die Preprocess-Funktion
+    auf alle Einträge an und speichert das Ergebnis als RideAware_Dataset_clean.csv.
+    Leere Einträge nach dem Preprocessing werden entfernt.
+    """
     print("=" * 70)
     print("RIDEAWARE BA2 – PREPROCESSING")
     print("=" * 70)
 
     if not INPUT_PATH.exists():
-        print(f"\n❌ Datei nicht gefunden: {INPUT_PATH}")
+        print(f"\nDatei nicht gefunden: {INPUT_PATH}")
         print("   Stelle sicher dass data/RideAware_Dataset.csv vorhanden ist.")
         return
 
@@ -75,7 +89,7 @@ def main():
     df["text"]  = df["text"].astype(str)
     df["label"] = df["label"].astype(str)
 
-    print(f"\n✓ Datei geladen: {INPUT_PATH} ({len(df)} Meldungen)")
+    print(f"\nDatei geladen: {INPUT_PATH} ({len(df)} Meldungen)")
     print(f"\nKlassenverteilung:")
     print(df["label"].value_counts().to_string())
 
@@ -89,7 +103,7 @@ def main():
     # Leere Texte entfernen
     empty = df["text"].str.strip() == ""
     if empty.sum() > 0:
-        print(f"  ⚠️  {empty.sum()} leere Meldungen entfernt.")
+        print(f"  {empty.sum()} leere Meldungen entfernt.")
         df = df[~empty].copy()
 
     print(f"\n  Ø Textlänge vorher:  {orig_len:.0f} Zeichen")
@@ -99,7 +113,7 @@ def main():
     df[["text", "label"]].to_csv(OUTPUT_PATH, index=False, encoding="utf-8")
 
     print(f"\n{'=' * 70}")
-    print(f"✅ Fertig! Gespeichert: {OUTPUT_PATH}")
+    print(f"Fertig! Gespeichert: {OUTPUT_PATH}")
     print(f"\nNächster Schritt:")
     print(f"  python init_data_splits.py")
     print("=" * 70)

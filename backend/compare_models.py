@@ -1,3 +1,13 @@
+"""
+RideAware - Modellvergleich
+
+Vergleicht das Logistic Regression Modell mit dem Naive Bayes Modell auf dem
+Testdatensatz. Beide Modelle müssen vorher mit train_model.py bzw.
+train_model_nb.py trainiert worden sein.
+
+Aufruf: python compare_models.py
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -14,12 +24,18 @@ MODEL_NB     = Path("model/rideaware_model_nb.joblib")
 
 
 def load_model(path: Path):
+    """Lädt ein gespeichertes sklearn Modell aus einer .joblib Datei."""
     if not path.exists():
         raise FileNotFoundError(f"Model not found: {path}")
     return joblib.load(path)
 
 
 def evaluate_model(model, X_test, y_test, model_name: str):
+    """
+    Wertet ein trainiertes Modell auf den Testdaten aus. Gibt Accuracy,
+    Macro-F1, den Classification Report und die Konfusionsmatrix aus.
+    Gibt außerdem Accuracy und F1 als Tupel zurück für den Gesamtvergleich.
+    """
     preds = model.predict(X_test)
     acc   = accuracy_score(y_test, preds)
     f1m   = f1_score(y_test, preds, average="macro", zero_division=0)
@@ -39,6 +55,11 @@ def evaluate_model(model, X_test, y_test, model_name: str):
 
 
 def main():
+    """
+    Lädt beide trainierten Modelle und vergleicht ihre Performance auf dem
+    Testdatensatz. Am Ende wird eine Zusammenfassung mit dem besseren Modell
+    ausgegeben.
+    """
     if not TEST_PATH.exists():
         raise FileNotFoundError(f"Missing {TEST_PATH}. Run init_data_splits.py first.")
 
@@ -77,11 +98,11 @@ def main():
     print("-" * 70)
 
     if f1_lr > f1_nb:
-        print(f"🏆 Winner (Macro-F1): Logistic Regression (+{f1_lr - f1_nb:.3f})")
+        print(f"Winner (Macro-F1): Logistic Regression (+{f1_lr - f1_nb:.3f})")
     elif f1_nb > f1_lr:
-        print(f"🏆 Winner (Macro-F1): Naive Bayes (+{f1_nb - f1_lr:.3f})")
+        print(f"Winner (Macro-F1): Naive Bayes (+{f1_nb - f1_lr:.3f})")
     else:
-        print("🤝 Tie in Macro-F1!")
+        print("Tie in Macro-F1!")
 
 
 if __name__ == "__main__":
