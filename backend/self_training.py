@@ -13,6 +13,7 @@ import argparse
 from pathlib import Path
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -58,7 +59,7 @@ def subsample_labeled(df: pd.DataFrame, n_labeled: int) -> pd.DataFrame:
         ))
         .reset_index(drop=True)
     )
-    print(f"  → Subsampling auf {len(result)} gelabelte Beispiele")
+    print(f"  -> Subsampling auf {len(result)} gelabelte Beispiele")
     return result
 
 
@@ -141,6 +142,33 @@ def self_training(
         pseudo_labels = model.predict(X_pool)
         confident     = max_conf >= threshold
         n_added       = int(confident.sum())
+
+        # Konfidenz-Statistik für die Arbeit (Kapitel 6.3)
+        print(f"  Konfidenz-Statistik der Pseudo-Labels:")
+        print(f"    Max:        {max_conf.max():.3f}")
+        print(f"    Mittelwert: {max_conf.mean():.3f}")
+        print(f"    Median:     {np.median(max_conf):.3f}")
+        print(f"    Min:        {max_conf.min():.3f}")
+        print(f"    >= 0.85:    {(max_conf >= 0.85).sum()} / {len(max_conf)}")
+        print(f"    >= 0.75:    {(max_conf >= 0.75).sum()} / {len(max_conf)}")
+        print(f"    >= 0.70:    {(max_conf >= 0.70).sum()} / {len(max_conf)}")
+
+        # Konfidenz-Histogramm speichern
+        plots_dir = Path("plots")
+        plots_dir.mkdir(exist_ok=True)
+        fig, ax = plt.subplots(figsize=(7, 4))
+        ax.hist(max_conf, bins=20, edgecolor="black", alpha=0.7)
+        ax.axvline(0.85, color="red",    linestyle="--", label="Schwellenwert 0,85")
+        ax.axvline(0.75, color="orange", linestyle="--", label="Alternativ 0,75")
+        ax.set_xlabel("Maximale Konfidenz pro Beispiel")
+        ax.set_ylabel("Anzahl Beispiele")
+        ax.set_title(f"Konfidenzverteilung – Iteration {iteration + 1}")
+        ax.legend()
+        plt.tight_layout()
+        hist_path = plots_dir / f"konfidenz_verteilung_iter{iteration + 1}.png"
+        fig.savefig(hist_path, dpi=150, bbox_inches="tight")
+        plt.close(fig)
+        print(f"  Konfidenz-Verteilung gespeichert: {hist_path}")
 
         if verbose:
             print(f"  Konfidente Pseudo-Labels: {n_added} / {len(X_pool)}")
