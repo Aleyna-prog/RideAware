@@ -5,10 +5,10 @@ import L from "leaflet";
 import "./App.css";
 import { translations, categoryTranslations, type Language } from "./translations";
 
-// ✅ N6: Theme Type
+// Mögliche Themes der Anwendung
 type Theme = "light" | "dark";
 
-// ✅ N6: Theme Colors (CSS Variables)
+// CSS-Variablen für Light- und Dark-Mode
 const themes = {
   light: {
     "--bg-main": "#f5f5f7",
@@ -45,6 +45,8 @@ type Report = {
 const API_BASE = "http://127.0.0.1:8000";
 const CATEGORIES = ["Gefahrenstelle", "Hindernis", "Markierung oder Schild", "Ampel", "Lückenschluss"];
 
+// Reagiert auf Klicks auf der Karte und übergibt die Koordinaten nach oben.
+// Rendert selbst nichts, nutzt nur den useMapEvents Hook von react-leaflet.
 function ClickToSetMarker({ onPick }: { onPick: (lat: number, lng: number) => void }) {
   useMapEvents({
     click(e: LeafletMouseEvent) {
@@ -54,7 +56,8 @@ function ClickToSetMarker({ onPick }: { onPick: (lat: number, lng: number) => vo
   return null;
 }
 
-/** BA2 Kategorien -> Farben */
+// Gibt eine Farbe für jede Kategorie zurück, damit die Marker auf der Karte
+// unterscheidbar sind. Unbekannte Kategorien bekommen ein neutrales Grau.
 function markerColor(category: string) {
   switch ((category ?? "").trim()) {
     case "Gefahrenstelle":
@@ -72,6 +75,7 @@ function markerColor(category: string) {
   }
 }
 
+// Erstellt ein rundes Leaflet-Marker-Icon mit der angegebenen Farbe.
 function makeDotIcon(color: string) {
   return L.divIcon({
     className: "",
@@ -103,7 +107,7 @@ export default function App() {
   const [searchText, setSearchText] = useState<string>("");
   const [tempSearch, setTempSearch] = useState<string>("");
 
-  // ✅ N6: Theme State (load from localStorage)
+  // Theme aus localStorage laden, damit die Einstellung nach Reload erhalten bleibt
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem("rideaware-theme");
     return (saved as Theme) || "dark";
@@ -113,7 +117,7 @@ export default function App() {
   const ct = categoryTranslations[language];
   const center: [number, number] = [48.2082, 16.3738]; // Wien
 
-  // ✅ N6: Apply theme CSS variables
+  // CSS-Variablen bei Theme-Wechsel setzen und Einstellung speichern
   useEffect(() => {
     const root = document.documentElement;
     Object.entries(themes[theme]).forEach(([key, value]) => {
@@ -122,11 +126,12 @@ export default function App() {
     localStorage.setItem("rideaware-theme", theme);
   }, [theme]);
 
-  // ✅ N6: Toggle theme function
   function toggleTheme() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   }
 
+  // Lädt alle Meldungen vom Backend, optional gefiltert nach Kategorie und Suchtext.
+  // Spam-Meldungen werden clientseitig herausgefiltert.
   async function loadReports() {
     const params = new URLSearchParams();
     if (filterCategory) params.append("category", filterCategory);
@@ -142,31 +147,22 @@ export default function App() {
     loadReports().catch(() => setError(t.errorLoadReports));
   }, [filterCategory, searchText]);
 
+  // Validiert das Formular und sendet eine neue Meldung an das Backend.
+  // Nach erfolgreicher Übermittlung werden Formular und Marker zurückgesetzt.
   async function submit() {
-    console.log('🔍 Submit called');
-    console.log('📝 Text:', text);
-    console.log('📍 Picked:', picked);
-    
     setError(null);
 
     const trimmed = text.trim();
-    console.log('✂️ Trimmed length:', trimmed.length);
-    
-    // Validation 1: Text length
+
     if (trimmed.length < 5 || trimmed.length > 150) {
-      console.log('❌ Text validation failed!');
       setError(t.errorLength);
       return;
     }
-    
-    // Validation 2: Location picked
-    if (!picked || picked === null || picked === undefined) {
-      console.log('❌ Location validation failed!');
+
+    if (!picked) {
       setError(t.errorNoLocation);
       return;
     }
-    
-    console.log('✅ Validation passed, sending request...');
 
     setBusy(true);
     try {
@@ -184,37 +180,36 @@ export default function App() {
       if (!res.ok) {
         const msg = await res.json().catch(() => null);
         setError(msg?.detail ?? t.errorSendFailed);
-        console.log('❌ Backend error:', msg?.detail);
         return;
       }
 
-      console.log('✅ Report submitted successfully!');
       setText("");
-      setPicked(null); // Reset marker after successful submit
+      setPicked(null);
       await loadReports();
     } catch (err) {
-      console.error('❌ Network error:', err);
       setError(t.errorBackendUnreachable);
     } finally {
       setBusy(false);
     }
   }
   
+  // Übernimmt den Suchwert aus dem Eingabefeld in den aktiven Filter
   function handleSearch() {
     setSearchText(tempSearch);
   }
-  
+
+  // Setzt Kategorie- und Textsuche zurück
   function clearFilters() {
     setFilterCategory("");
     setSearchText("");
     setTempSearch("");
   }
-  
-  // C3 - CSV Export
+
+  // Öffnet den CSV-Export des Backends im neuen Tab, optional gefiltert nach Kategorie
   function exportCSV() {
     const params = new URLSearchParams();
     if (filterCategory) params.append("category", filterCategory);
-    
+
     const url = `${API_BASE}/reports/export${params.toString() ? '?' + params.toString() : ''}`;
     window.open(url, '_blank');
   }
@@ -233,7 +228,7 @@ export default function App() {
 
   const activeFilters = filterCategory || searchText;
   
-  // Validation helper
+  // Prüft ob alle Pflichtfelder ausgefüllt sind, um den Submit-Button freizuschalten
   const isFormValid = () => {
     const trimmed = text.trim();
     return trimmed.length >= 5 && trimmed.length <= 150 && picked !== null;
@@ -268,7 +263,7 @@ export default function App() {
         </div>
 
         <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-          {/* ✅ N6: Theme Toggle Button */}
+          {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
             style={{
@@ -386,7 +381,7 @@ export default function App() {
             <h3 style={{ margin: 0, fontSize: 14, fontWeight: 800 }}>{t.latestReports}</h3>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <div style={{ fontSize: 12, color: "var(--text-muted)" }}>{reports.length} {t.entries}</div>
-              {/* C3 - CSV Export Button */}
+              {/* CSV Export Button */}
               <button
                 onClick={exportCSV}
                 style={{
