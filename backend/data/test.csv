@@ -1,69 +1,76 @@
 text,label
-Eisplatten auf dem Radweg sehr gefährlich,Hindernis
-"Steine am Weg, man rutscht leicht",Hindernis
-"Danke, der neue Radweg ist super",Positives Feedback
-Blind corner very dangerous,Gefahrenstelle
-Sehr steile Abfahrt ohne Bremsmöglichkeit,Gefahrenstelle
-"Limited time offer, don't miss out",Spam
-Kaputte Palette mitten am Radweg,Hindernis
-Super Angebot nur 3 Tage,Spam
-Free shipping on all bikes,Spam
-Excellent new bike infrastructure,Positives Feedback
-Car door opened right in front of me,Gefahrenstelle
-Scherben liegen auf dem Radweg,Hindernis
-Gute Ampelschaltung für Radfahrer hier,Positives Feedback
-Exclusive discount click www.sale.net,Spam
-Kostenlose Versicherung für dein Rad,Spam
-Vorbildliche Umsetzung,Positives Feedback
-Broken glass on the cycle path,Hindernis
-Jetzt bestellen morgen liefern,Spam
-Debris and stones on the road,Hindernis
-"Top bewertet auf Trustpilot, klick hier",Spam
-Buy cheap bikes now at www.fakebikes.com,Spam
-Mega Sale www.bikeshop.com,Spam
-Close pass by a vehicle,Gefahrenstelle
-"Curb too high, no ramp",Infrastrukturproblem
-Good job fixing the road,Positives Feedback
-Gefährliche Kreuzung ohne Sicht,Gefahrenstelle
-"Schnell sein, Angebot läuft ab",Spam
-Top! Endlich ist die Baustelle weg,Positives Feedback
-Scharfe Rechtskurve nicht einsehbar,Gefahrenstelle
-Click here to win money,Spam
-Liquidation Sale 80 Prozent Rabatt,Spam
-Beste Preise garantiert oder Geld zurück,Spam
-Verpasse nicht unseren Sale,Spam
-Steine von Baustelle nicht weggeräumt,Hindernis
-Tolle Verbesserung beim Praterstern,Positives Feedback
-Steinbrocken nach Bauarbeiten liegen rum,Hindernis
-Road surface is damaged and uneven,Infrastrukturproblem
-"Gratis Lieferung, keine Versandkosten",Spam
-Bike lane markings are missing,Infrastrukturproblem
-Autofahrer übersehen Radfahrer hier immer,Gefahrenstelle
-"Super Beleuchtung, man sieht viel besser",Positives Feedback
-Construction blocks the lane without detour,Infrastrukturproblem
-Bonuspunkte beim Einkauf sammeln,Spam
-Auto hat mich fast touchiert,Gefahrenstelle
-"Discount code inside, hurry up",Spam
-"Sehr gefährliche Einmündung, keine Sicht",Gefahrenstelle
-Radweg viel zu eng dimensioniert,Infrastrukturproblem
-A branch is blocking the path,Hindernis
-Melde dich an spare 20 Prozent,Spam
-Radweg total holprig und uneben,Infrastrukturproblem
-Sign missing at intersection,Infrastrukturproblem
-Kostenloser Versand Code BIKE2024,Spam
-Near miss with a car turning right,Gefahrenstelle
-"Close pass, Auto kam mir sehr nahe",Gefahrenstelle
-Abbiege-Markierung fehlt komplett,Infrastrukturproblem
-"Perfekter Radweg, mehr davon bitte",Positives Feedback
-Radwegmarkierung ist kaum sichtbar,Infrastrukturproblem
-Traffic light broken for bikes,Infrastrukturproblem
-Tolle neue Infrastruktur,Positives Feedback
-Neue Ampel funktioniert perfekt,Positives Feedback
-Bauschutt liegt auf der Fahrbahn,Hindernis
-www.super-deal.com limited offer,Spam
-"Kostenlos testen, keine Kreditkarte nötig",Spam
-Fehlende Ampel für Radfahrer,Infrastrukturproblem
-Large branch blocking the path,Hindernis
-Follow my channel and buy,Spam
-Subscribe and get free shipping,Spam
-Radweg endet plötzlich ohne Hinweis,Infrastrukturproblem
+"Eine neu errichtete Barriere vor der Straßenquerung, die viel zu knapp und eng bemessen ist. Verlang zu viel Konzentration sich dort duchzzschleusen, sodass keine Konzentration für den Verkehr mehr bleibt.",Hindernis
+"Das Geradeausgebot an der Kreuzung Währinger Straße/Spitalgasse gilt auch für Radfahrer obwohl auf der Spitalgasse ein Radfahrstreifen vorhanden ist. Eine Zusatztafel ""ausgenommen Fahrrad"" wäre notwendig.",Markierung oder Schild
+Von der Karl Popper Straße (Süden) kommend über den Gürtel ist die Zeit zum Räumen der Kreuzung äußerst knapp angesetzt (7 Sek ab gelb bis Autofahrer am Gürtel wieder grün haben).,Ampel
+"Hier konnte sich die Behörde scheinbar nicht entscheiden, ob sie eine Radfahrüberfahrt verordnen will:- Blockmarkierung: Ja-Verkehrszeichen ""Fahrradüberfahrt"": Ja- Verkehrszeichen ungültig, weil nur links: Nein",Markierung oder Schild
+Die Radfahrerampel schaltet zeitgleich mit der Fußgängerampel auf Rot. Die Grünphase für Radfahrer müsste verlängert werden.,Ampel
+Ampelphase für Radfahrer ist viel zu kurz und vom Timing her in beide Richtungen fast nicht zu schaffen. Der Autoverkehr zum Mc Donalds hat eine längere Grünphase.,Ampel
+Bitte kümmern Sie sich um einen adäquaten Radweg im Rahmen des Umbaus Parkplatz vor Schloss Schönbrunn!,Lückenschluss
+"Hier gibt es eine Fussgängerampel, aber kein für Radfahrer. Das Problem, die Fussgängerampel schaltet viel früher auf rot. Wenn ich nun als Radfahrer weiterfahre, glauben die meisten Autofahrer ich hätte bereits rot.",Ampel
+"Da die Burggassse eine für Radfahrer sehr angenehme Gürtel-Innenstadt-Verbindung darstellt, wäre eine Bikebox auf der Brücke sehr empfehlenswert. Von Norden kommend ist sonst das Abbiegen in die Burggasse ein kompliziertes Unterfangen, bzw. das Einreihen als Radfahrer vor den Autos mit einer Bikebox gibt Sicherheit.",Lückenschluss
+"Leider kommt es dabei oftmalig vor, dass die Ampeln auf der Mariahilfer Straße (Kreuzungen Kirchengasse und Neubaugasse) rot geschaltet sind, ohne dass überhaupt ein KfZ/ Bus da wäre, der den entsprechenden Vorrang nutzen könnte.",Ampel
+"Ein ""Einfahrt verboten"" Schild steht mitten im Kreuzungsbereich und unterbindet die Querung der Reinprechtsdorfer Straße für Radfahrer die auf der Margaretenstraße weiterfahren wollen.",Markierung oder Schild
+"Autofahrer von links kommend, sehen uns Radfahrer oft nicht, da sie nur ihren Blick nach Rechts gerichtet haben. Ein Hinweisschild für die Autofahrer, dass hier ein Radweg kreuzt wäre vom Vorteil.",Gefahrenstelle
+"An der Kreuzung Seidengasse/Kaiserstraße steht für Radfahrer, die von stadtauswärts (z.B. vom Gürtelradweg oder von der Goldschlagstraße) kommen eine Stopptafel zur Querung der Kaiserstraße, die allerdings wirklich perfekt von einem Baum verdeckt ist. Man sieht sie erst wenige Meter vor der Kreuzung - dabei ist diese Kreuzung mit der Straßenbahnquerung nicht gerade ungefährlich.",Markierung oder Schild
+"Keine sichere Zufahrt für Radfahrer zu den Radabstellanlagen bei Schule und Kiga möglich, speziell im Morgenverkehr.",Lückenschluss
+Kein Radweg. Zu Stoßzeiten sehr viel Verkehr. An den 30er hält dich praktisch kein Auto.,Lückenschluss
+"Hier existiert ein Fuß- und Radweg, doch leider ohne Aufschrägung. Mit Mountainbikes kann man da vielleicht rauffahren, aber mit Straßenräder sicher nicht, ohne sich die Felge zu beschädigen.",Hindernis
+"Radweg sollte in beide Richtungen gehen, Fahren auf der Gerasdorfer Straße ist mir speziell mit Kindern zu gefährlich, daher nehme ich oft den Radweg in die Gegenrichtung.",Lückenschluss
+Radwegverbindung von Hufelandgasse in Schönbrunner-Str.,Lückenschluss
+In der Heiligenstädter Straße fehlt ein Radweg obwohl sie eine wichtige Verbindung zur BOKU darstellt. Vom Donaukanal her ist die Strecke nicht sinnvoll per Rad erreichbar.,Lückenschluss
+"Der Skywalk ist die einzige sichere und kreuzungsfreie Verbindung zwischen dem 19. und dem 2., 20. und 21.",Lückenschluss
+"Vom Aumannplatz am Radweg kommend begegnet man Autos die in die Gegenrichtung fahren, quasi im Kreuzungsbereich. Man kann nicht parallel aneinander vorbeifahren. Das ist sehr unübersichtlich, zumal es auch Straßenbahn und Abbieger gibt.",Gefahrenstelle
+"Morgens zwischen ca. 0730-0900 (werktags) wird die Kreuzung in Fahrtrichtung Schottentor immer wieder durch KFZ verstellt, die die Kreuzung in ihrer Ampelphase nicht mehr verlassen.",Gefahrenstelle
+"Kreuzung Semperstraße X Gentzgasse: LKW ist illegalerweise auf Gehsteig gefahren und hat Schild verbogen, wobei die Zusatztafel sich um 90° verdreht hat. Bitte in Ordnung bringen! Danke!",Markierung oder Schild
+"Der Radweg zwischen Rathaus und Universität ist in einem extrem schlechten Zustand. Ich habe schon Radfahrer gesehen, die auf den Schlaglöchern und Rissen die Kontrolle verloren haben,",Gefahrenstelle
+Die Radwegampel mit Freigabetaster ist sehr knapp an der Kreuzung montiert. Wenn an dieser Stelle auf die Grünphase gewartet wird besteht Lebensgefahr. Die Ampel wird regelmäßig von Fahrzeugen beschädigt.,Gefahrenstelle
+"Sicheres Abbiegen von der Hörlgasse in die Währingerstraße Richtung Schottentor ist nur möglich, wenn man zwei Autofahrstreifen kreuzt, um auf die linke Spur zu kommen. Es wäre ein Radweg mit Abbiegespur in der ganzen Hörlgasse gut.",Gefahrenstelle
+Leider verleitet der Fahrreadstreifen hier die PKW-Fahrer zu knapp an den Radfahrenden vorbeizusausen. Bin schon von Seitenspiegeln touchiert worden.,Gefahrenstelle
+Das Überqueren an dieser Stelle ist für Radfahrende problematisch. Autofahrer haben vorrang und auch bei Stauung wird die Überqueren für den Hauptradweg von Autofahrenden selten frei gelassen. Eine Markierung auf dem Boden oder per Schild würde die Situation entschärfen,Gefahrenstelle
+Markierungen sind hier schon sehr alt und schwer erkennbar,Markierung oder Schild
+"Mehrere Ampelschaltungen hintereinander sind überhaupt nicht aufeinander abgestimmt und im 100 Meter Takt hintereinander so nah beeinander, daß nur sinnloses Stehen die Folge ist.",Ampel
+Sehr grob gepflasterte Unterführung die ein Befahren unmöglich macht. Die Mehrheit weicht daher auf den sehr schmalen Gehweg aus. Die Straße wäre hier jedoch breit genug für einen zusätzlichen Radstreifen,Lückenschluss
+Vor der Ampel fehlt ein markierter Wartebereich für Radfahrende. Autolenker versuchen sich an wartenden Radfahrern vorbeizuquetschen. Zusätzlich fehlt ein ausreichend breiter Radstreifen.,Markierung oder Schild
+Das Radweg-Schild Richtung Boschstraße bei der Unterführung Mooslackengasse wurde entfernt. Dadurch sind Fußgänger auf dem schmalen Radweg unterwegs.,Markierung oder Schild
+"Bei Einfahrt in die Bahn-Unterführung Mooslackengasse wurde schon vor längerer Zeit das Radweg-Schild Richtung Boschstraße entfernt, sodass hier einige Fußgänger am ohnehin sehr schmalen Radweg unterwegs sind. Wahrscheinlich ist das Schild hinter den USB-Platten der Baustelle versteckt.",Markierung oder Schild
+Die Fahrbahn ist in beide Richtungen nicht besonders angenehm zu befahren.,Hindernis
+In diesem Bereich der Hütteldorfer Straße sind mittlerweile sehr große Spalten zwischen den Betonplatten der Straßenbahnschienen und dem Asphalt. Das ist entsprechend unfallträchtig.,Gefahrenstelle
+Beim Linksabbiegen in die Westbahnstraße gibt es keinen Wartebereich für Radfahrer. Man muss auf dem Autostreifen warten was zu gefährlichen Situationen führt.,Markierung oder Schild
+Rad-Basisnetz nach jedem Regen unbefahrbar. Sehr ärgerlich.,Hindernis
+Zwischen Hörlgasse und Universitätsstr. fahren (größere) Autos und LKWs viel zu oft auf dem Fahrradstreifen. Es kommt hier regelmäßig zu gefährlichen Situationen.,Gefahrenstelle
+Die Stollgasse ist nur in einer Richtung befahrbar. In der Gegenrichtung muss ein Umweg über die Mariahilfer Straße oder die Seidengasse in Kauf genommen werden.,Lückenschluss
+Da steht ein unbeschildertes Baustellengitter von der Baustelle über 100% des Radweg.,Hindernis
+"Es herrscht ein allgemeines Fahrverbot ohne Fahrrad-Ausnahme obwohl es sich um eine öffentliche Straße handelt. Es sollte ein ""ausgenommen Fahrrad"" Schild ergänzt werden.",Markierung oder Schild
+"Man darf zwar mit dem Rad gegen die Einbahn fahren, aufgrund der querparkenden, oft sehr großen Autos ist es aber sehr eng und die entgegenkommenden Autos sind oft zu schnell.",Gefahrenstelle
+"Als Radfahrende Person von der Argentinierstraße kommend den Gürtel zu überqueren in die Gertrude- Fröhlich Sandnerstraße ist in einer Ampelphase derzeit nicht möglich. Es geht sich bei durchschnittlicher Geschwindigkeit zeitlich nicht aus. Ich finde so sollten Radfahrende gegenüber dem Autoverkehr nicht benachteiligt sein,",Ampel
+"Keine Rampe, nur Stufen und ein provisorisches Brett.",Hindernis
+"Es fehlt die Möglichkeit sich irgendwo zum indirekten rechts/links-Abbiegen in die Fuchsthallergasse abzubiegen. Stelt man sich am Radweg für die Weiterfahrt in jene Gasse auf, ist man den Linksabbiegern Richtung Wühringer Straße im Weg.",Markierung oder Schild
+"Radweglücke zwischen Linker Wienzeile und Tram-Querung schließen. Es ist nicht sehr benutzerfreundliche, wenn man von der Ullmannstraße kommed im Wiental stadteinwärts weiter fahren will",Lückenschluss
+Dieser Radweg ist deutlich zu schmal für einen Zweirichtungsweg. Hier muss bei Gegenverkehr zwangsläufig auf den nur durch eine Trennlinie getrennten ebenfalls schmalen Gehweg ausgewichen werden.,Gefahrenstelle
+"Der Radstreifen gegen die Einbahn in der Augustinerstraße ist eine Gefahrenstelle, insbesondere was Einbiegende von der Spiegelgasse/Lobkowitzplatz bzw. von der Habsburgergasse betrifft. Daneben ist der Radstreifen durch Ladetätigkeit bzw.",Gefahrenstelle
+"Ob eine provisorische Endhaltestelle ist, weiß ich nicht, aber die Situation in Hebragasse ist äußerst unangenehm. Es ragen einige Autos über die Parkflächen hinaus. Lösung wären Längsparkplätze.",Hindernis
+"Radfahrerinnen bzw. Radfahrer, die aus der Alser Straße kommend nach links in die Spitalgasse wollen, müssen in die Spur für Rechtsabbieger, um dann ein Stück gerade auszufahren, an der Linie zu halten und dann nach links abzubiegen. Sinnvoll wäre wohl eine Bodenmarkierung bei LSA der Alser Straße vor der Ecke Lange Gasse für Radfahrer, die dann vor den Fahrzeugen warten können, bei Grün gerade ausfahren und dann nach links abbiegen.",Markierung oder Schild
+"Wenn man von Süden kommt, könnte man eigentlich bequem bei rot abbiegen, da man auf einem Radweg bleiben kann und sehr wenige Autos von der Lazarettgasse in die Sensengasse fahren und die Fußgänger stehen müssen. Ein Grünpfeil wäre hier angebracht.",Ampel
+"Obwohl EuroVelo ist diese Radroute nicht einmal wetterfest (Nässe, Schnee) asphaltiert. Als Alltagsroute (somit auch bei Schlechtwetter) somit nicht brauchbar)",Hindernis
+Der Weg ist die direkte Verbindung vom Schöpfwerk zum Bahnhof Meidling. In der Pottendorfer Straße existiert auch ein entsprechender Radweg. Leider ist im Franz-Siller-Weg das Radfahren verboten.,Lückenschluss
+Ein breiter gut ausgebauter Radweg neben dem Verlauf der Nordwestbahn folgend könnte eine schnelle Verbindung zum Bezirkszentrum ermöglichen.,Lückenschluss
+"Bei der Ampel Schottenring-Kai gab es die ""Grün""Phase für die Straßenbahn nur wenn auch tatsächlich eine gefahren ist. Jetzt haben sowohl Fußgänger/Radfahrer als auch Autofahrer gemeinsam geraume Zeit rot auch wenn keine Straßenbahn kommt. Falls das nicht Absicht ist, ist vielleicht der Sensor defekt oder so?",Ampel
+Die Ampelschaltung ist nicht fahrradfreundlich. Die Grünphase auf der Weyringerstrasse ist deutlich länger als in der Argentinierstrasse,Ampel
+"Die Fahrradspur am Fahrbahnrand auf der Bachseite wird im Winter nicht geräumt. Das macht das Radfahren hier noch gefährlicher, besonders in der Kurve.",Hindernis
+Sichere Zufahrt für Radfahrer zum AKH.Die Zufahrt erfolgt über den mehrspurigen Gürtel. Das ist nicht jedermanns Sache.,Lückenschluss
+"Der Radweg Wien 23., Liesingbach endet beim Rathaus. Die Überquerung des Liesinger Hauptplatzes und das Fahrverbot der Unterführung ÖBB-Südbahn ist mühsam..",Hindernis
+"Im Anschluss an den Radweg/Skywalk fährt man in eine für Radfahrer freigegebene Fußgängerzone. Vom Skywalk aus kommend ist diese aber nicht gekennzeichnet (oder so schlecht angebracht, dass ich das Schild trotz mehrmaligem, aufmerksamen Hinsehen nicht erkennen konnte)",Markierung oder Schild
+Unverständliche Ampelschaltung von der Breite Gasse kommend: Straßenbahn hat viel früher als Individualverkehr rot und blockiert dann Durchfahrt.,Ampel
+Trotz der 30er Zone fahren Autofahrer mit deutlich überhöhter. Geschwindigkeit. Ein Autofahrer wollte mich von der Straße drängen mit Kind am Kindersitz.,Gefahrenstelle
+"Obwohl hier eine Hauptradroute ist, befindet sich hier fast ständig ein provisorisches Durchfahrtverbotsschild, das nur Einsatzfahrzeuge ausnimmt. -> Zusatztafel!",Markierung oder Schild
+Die Radfahrampel parallel Seyringer Straße Richtung Ficker-Straße zeigt seit Monaten kein grün. Mein Pech und es ist immer die Lampe/Leuchte defekt. Oder kontrolliert die MA *irgendwas* zufällig immer in der Rotphase?,Ampel
+"Wo die Zahnradbahn Straße in die Eroicagasse mündet sollte eine Gehsteigabschrägung gemacht werden das würde Radfahrern, Kinderwagen und Behinderten die Benutzung erleichtern.",Hindernis
+"Die Ampeln auf der Sandleitengasse/Maroltingergasse sind komplett ""verschalten"", d.h. es herrscht rote Welle. Wenn zum 3.",Ampel
+"Es fehlt ein Fahhradweg auf der gesamten Krottenbachstraße sowohl auf der rechten als auch auf der linken Fahrbahnseite. Da die Straße in beiden Richtungen ziemlich stark befahren ist, stellt dies für Radfahrer eine potentielle Gefahrenzone dar.",Lückenschluss
+rechts abbiegen bei Rot oder ohne Ampel bitte. Ist das nicht beinahe eine geschützte Kreuzung? Kommend vom Getreidemarkt rechts Abbiegen in die Wienzeile ist ungut gelöst.,Ampel
+"Hier ist für Geradeaus und Rechts noch ewig Rotlicht, während zum Linkabbiegen und Queren des Werkstättenweges zu Fuß Grünlicht zu sehen ist.",Ampel
+Die hohe Abbiegegeschwindigkeit von PKW bringt Radfahrende oft in gefährliche Situationen. Die Umsetzung mit aufgeklebten Reflektoren entlang der Markierung ist leider unzureichend. Die hohen Kurvengeschwindigkeiten und geringen Überholabstände bleiben.,Gefahrenstelle
+"Hier ist ein breiter Schranken, an dem man kaum (bzw. nur mit Absteigen und daneben das Fahrrad schieben) kaum vorbeikommt. Mit Anhänger wäre es komplett unmöglich.",Hindernis
+Die Schwellen sind sehr ärgerlich.,Hindernis
+"Anstatt wie früher einfach geradeaus von der Müller-Guttenbrunn-Straße weiter in die Linzer Straße stadtauswärts zu fahren, sind jetzt offenbar komplexe Fahrmanöver mit Seitenwechsel und Ampel-Warteze...",Hindernis
+Auf dieser Brücke fehlt eine Stufenauflage / Schiene für Fahrräder.,Hindernis

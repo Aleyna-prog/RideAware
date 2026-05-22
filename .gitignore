@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+.env/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+rideaware.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (frontend)
+node_modules/
+dist/
+build/
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Model files
+*.pkl
+*.joblib
+*.model
+
+# Logs
+*.log
