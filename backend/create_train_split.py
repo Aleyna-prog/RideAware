@@ -30,25 +30,25 @@ def main():
 
     # ── Trainingspool laden ───────────────────────────────────────────────────
     if not TRAIN_POOL_PATH.exists():
-        print(f"\n❌ {TRAIN_POOL_PATH} nicht gefunden.")
+        print(f"\n{TRAIN_POOL_PATH} nicht gefunden.")
         print("   Führe zuerst aus: python init_data_splits.py")
         return
 
     df_pool = pd.read_csv(TRAIN_POOL_PATH)
     df_pool["text"]  = df_pool["text"].astype(str)
     df_pool["label"] = df_pool["label"].astype(str)
-    print(f"\n✓ Trainingspool geladen: {len(df_pool)} echte Meldungen")
+    print(f"\nTrainingspool geladen: {len(df_pool)} echte Meldungen")
 
     # ── Synthetische Daten laden ──────────────────────────────────────────────
     if not SYNTHETIC_PATH.exists():
-        print(f"\n⚠️  {SYNTHETIC_PATH} nicht gefunden.")
+        print(f"\n{SYNTHETIC_PATH} nicht gefunden.")
         print("   Trainingsset wird nur aus echten Daten erstellt.")
         df_combined = df_pool[["text", "label"]].copy()
     else:
         df_syn = pd.read_csv(SYNTHETIC_PATH)
         df_syn["text"]  = df_syn["text"].astype(str)
         df_syn["label"] = df_syn["label"].astype(str)
-        print(f"✓ Synthetische Daten geladen: {len(df_syn)} Meldungen")
+        print(f"Synthetische Daten geladen: {len(df_syn)} Meldungen")
 
         # Kombinieren
         df_combined = pd.concat(
@@ -66,7 +66,7 @@ def main():
     print(df_combined["label"].value_counts().to_string())
 
     print(f"\n{'=' * 70}")
-    print(f"✅ Fertig! Gespeichert: {OUTPUT_PATH} ({len(df_combined)} Meldungen)")
+    print(f"Fertig! Gespeichert: {OUTPUT_PATH} ({len(df_combined)} Meldungen)")
     print(f"   Davon echt:        {len(df_pool)}")
     print(f"   Davon synthetisch: {len(df_combined) - len(df_pool)}")
     print(f"\nNächster Schritt:")

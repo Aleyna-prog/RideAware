@@ -76,7 +76,7 @@ def train_sklearn(name: str, pipeline: Pipeline, X_train, y_train) -> float:
     start = time.time()
     pipeline.fit(X_train, y_train)
     elapsed = time.time() - start
-    print(f"  ✓ Fertig in {elapsed:.2f}s")
+    print(f"  Fertig in {elapsed:.2f}s")
     return elapsed
 
 
@@ -127,7 +127,7 @@ def train_and_evaluate_bert(
         )
         from torch.optim import AdamW
     except ImportError:
-        print("  ❌ transformers/torch nicht installiert!")
+        print("  transformers/torch nicht installiert.")
         print("     Führe aus: pip install transformers torch")
         return 0.0, 0.0, 0.0
 
@@ -139,8 +139,8 @@ def train_and_evaluate_bert(
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"  Gerät: {device}")
     if device.type == "cpu":
-        print("  ⚠️  CPU erkannt – BERT Training dauert ~30-60 Min.")
-        print("     Tipp: Verwende das Colab Notebook für GPU-Training!")
+        print("  CPU erkannt – BERT Training dauert ca. 30-60 Min.")
+        print("     Tipp: Verwende das Colab Notebook für GPU-Training.")
         if batch_size > 8:
             batch_size = 8
 
@@ -250,7 +250,7 @@ def train_and_evaluate_bert(
     # Modell speichern
     model.save_pretrained(BERT_DIR)
     tokenizer.save_pretrained(BERT_DIR)
-    print(f"  ✓ BERT Modell gespeichert: {BERT_DIR}")
+    print(f"  BERT Modell gespeichert: {BERT_DIR}")
 
     return acc_final, f1_final, elapsed
 
@@ -269,19 +269,19 @@ def main():
     # ── Daten laden ──────────────────────────────────────────────────────────
     print("\nStep 1: Daten laden...")
     if not TRAIN_PATH.exists():
-        print(f"❌ {TRAIN_PATH} nicht gefunden.")
+        print(f"{TRAIN_PATH} nicht gefunden.")
         print("   Führe aus: python init_data_splits.py && python split_data.py")
         return
 
     df_train = load_csv(TRAIN_PATH)
-    print(f"  ✓ Training: {len(df_train)} Beispiele")
+    print(f"  Training: {len(df_train)} Beispiele")
 
     if not TEST_PATH.exists():
-        print("  ⚠️  Kein Testset gefunden – Evaluation übersprungen.")
+        print("  Kein Testset gefunden – Evaluation übersprungen.")
         df_test = None
     else:
         df_test = load_csv(TEST_PATH)
-        print(f"  ✓ Test:     {len(df_test)} Beispiele")
+        print(f"  Test:     {len(df_test)} Beispiele")
 
     X_train = df_train["text"].tolist()
     y_train = df_train["label"].tolist()
@@ -298,8 +298,8 @@ def main():
         ("tfidf", TfidfVectorizer(ngram_range=(1, 2), min_df=1, max_df=0.95)),
         ("clf",   MultinomialNB(alpha=1.0)),
     ])
-    print("  ✓ Logistic Regression bereit")
-    print("  ✓ Naive Bayes bereit")
+    print("  Logistic Regression bereit")
+    print("  Naive Bayes bereit")
 
     print("\nStep 3: Training...")
     time_lr = train_sklearn("Logistic Regression", pipe_lr, X_train, y_train)
@@ -326,8 +326,8 @@ def main():
     print("\nStep 5: Modelle speichern...")
     save_sklearn(pipe_lr, MODEL_LR_PATH, META_LR_PATH, "tfidf+logreg",      "2.0")
     save_sklearn(pipe_nb, MODEL_NB_PATH, META_NB_PATH, "tfidf+naivebayes",  "2.0")
-    print(f"  ✓ {MODEL_LR_PATH}")
-    print(f"  ✓ {MODEL_NB_PATH}")
+    print(f"  Gespeichert: {MODEL_LR_PATH}")
+    print(f"  Gespeichert: {MODEL_NB_PATH}")
 
     # ── Abschlusstabelle ──────────────────────────────────────────────────────
     if df_test is not None:
@@ -345,7 +345,7 @@ def main():
         if args.bert and time_bert > 0:
             results["BERT"] = f1_bert
         best = max(results, key=results.get)  # type: ignore
-        print(f"🏆 Bestes Modell (Macro-F1): {best} ({results[best]:.3f})")
+        print(f"Bestes Modell (Macro-F1): {best} ({results[best]:.3f})")
 
         # Ergebnisse als CSV speichern
         rows = [
@@ -357,10 +357,10 @@ def main():
 
         out_path = RESULTS_DIR / "model_comparison.csv"
         pd.DataFrame(rows).to_csv(out_path, index=False)
-        print(f"\n✅ Ergebnisse gespeichert: {out_path}")
+        print(f"\nErgebnisse gespeichert: {out_path}")
 
     print("\n" + "=" * 70)
-    print("✅ Fertig!")
+    print("Fertig!")
     if not args.bert:
         print("   Tipp: Mit --bert auch BERT einbeziehen:")
         print("   python train_and_compare.py --bert")

@@ -75,7 +75,7 @@ def generate_random_coordinate() -> Tuple[float, float]:
 
 def generate_dummy_reports(count_per_category: int = 5) -> List[dict]:
     reports = []
-    for category, texts in DUMMY_TEXTS.items():
+    for _, texts in DUMMY_TEXTS.items():
         for _ in range(count_per_category):
             text = random.choice(texts)
             lat, lng = generate_random_coordinate()
@@ -92,17 +92,17 @@ def main():
     try:
         response = requests.get(f"{API_BASE}/health", timeout=5)
         if not response.ok:
-            print(f"❌ Backend nicht erreichbar. Starte zuerst: uvicorn main:app --reload")
+            print(f"Backend nicht erreichbar. Starte zuerst: uvicorn main:app --reload")
             return
     except Exception:
-        print("❌ Backend nicht erreichbar. Starte zuerst: uvicorn main:app --reload")
+        print("Backend nicht erreichbar. Starte zuerst: uvicorn main:app --reload")
         return
 
     reports = generate_dummy_reports(count_per_category=5)
-    print(f"✓ {len(reports)} Dummy-Meldungen generiert")
+    print(f"{len(reports)} Dummy-Meldungen generiert")
 
     success = 0
-    for i, report in enumerate(reports, 1):
+    for report in reports:
         try:
             res = requests.post(f"{API_BASE}/reports", json=report, timeout=10)
             if res.ok:
@@ -110,7 +110,7 @@ def main():
         except Exception:
             pass
 
-    print(f"✓ {success}/{len(reports)} Meldungen hochgeladen")
+    print(f"{success}/{len(reports)} Meldungen hochgeladen")
 
 
 if __name__ == "__main__":

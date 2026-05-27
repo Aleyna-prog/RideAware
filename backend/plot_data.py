@@ -33,7 +33,7 @@ def plot_text_length(df: pd.DataFrame, title: str):
 
 def main():
     if not TRAIN_POOL_PATH.exists():
-        print("❌ train_pool.csv nicht gefunden. Führe init_data_splits.py aus.")
+        print("train_pool.csv nicht gefunden. Führe init_data_splits.py aus.")
         return
 
     df_pool  = pd.read_csv(TRAIN_POOL_PATH)

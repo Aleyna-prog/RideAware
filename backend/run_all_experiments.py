@@ -13,12 +13,11 @@ Usage:
 """
 
 import subprocess
-import sys
 from pathlib import Path
 
 def run(cmd: str, description: str) -> bool:
     print(f"\n{'=' * 70}")
-    print(f"▶  {description}")
+    print(f"  {description}")
     print(f"   Befehl: {cmd}")
     print("=" * 70)
 
@@ -28,10 +27,10 @@ def run(cmd: str, description: str) -> bool:
     )
 
     if result.returncode != 0:
-        print(f"\n❌ Fehler bei: {cmd}")
+        print(f"\nFehler bei: {cmd}")
         return False
 
-    print(f"\n✅ Fertig: {description}")
+    print(f"\nFertig: {description}")
     return True
 
 
@@ -51,14 +50,14 @@ def main():
     ]
     for path in required:
         if not path.exists():
-            print(f"❌ Fehlende Datei: {path}")
+            print(f"Fehlende Datei: {path}")
             print("   Führe zuerst aus:")
             print("   python preprocess_reports.py")
             print("   python init_data_splits.py")
             print("   python create_train_split.py")
             return
 
-    print("✅ Alle benötigten Dateien vorhanden!\n")
+    print("Alle benötigten Dateien vorhanden.\n")
 
     steps = [
         # (Befehl, Beschreibung)
@@ -90,39 +89,39 @@ def main():
         if ok:
             success_count += 1
         else:
-            print(f"\n⚠️  Schritt fehlgeschlagen – fahre trotzdem fort...")
+            print(f"\nSchritt fehlgeschlagen – fahre trotzdem fort...")
 
     # Abschlussbericht
     print("\n" + "=" * 70)
     print("ABSCHLUSSBERICHT")
     print("=" * 70)
-    print(f"✅ {success_count}/{len(steps)} Schritte erfolgreich\n")
+    print(f"{success_count}/{len(steps)} Schritte erfolgreich\n")
 
     if Path("results/label_experiment_logreg.csv").exists():
         import pandas as pd
-        print("📊 ERGEBNISSE LOGISTIC REGRESSION:")
+        print("ERGEBNISSE LOGISTIC REGRESSION:")
         df = pd.read_csv("results/label_experiment_logreg.csv")
         print(df.to_string(index=False))
 
     if Path("results/label_experiment_nb.csv").exists():
         import pandas as pd
-        print("\n📊 ERGEBNISSE NAIVE BAYES:")
+        print("\nERGEBNISSE NAIVE BAYES:")
         df = pd.read_csv("results/label_experiment_nb.csv")
         print(df.to_string(index=False))
 
     if Path("results/model_comparison.csv").exists():
         import pandas as pd
-        print("\n📊 MODELLVERGLEICH (volles Training):")
+        print("\nMODELLVERGLEICH (volles Training):")
         df = pd.read_csv("results/model_comparison.csv")
         print(df.to_string(index=False))
 
     print("\n" + "=" * 70)
-    print("✅ Alle Experimente abgeschlossen!")
+    print("Alle Experimente abgeschlossen.")
     print("\nGrafiken gespeichert in: plots/")
     print("Ergebnisse gespeichert in: results/")
     print("\nNächster Schritt:")
-    print("  → BERT in Google Colab trainieren!")
-    print("  → Dann Kapitel 5 und 6 der BA schreiben!")
+    print("  BERT in Google Colab trainieren")
+    print("  Dann Kapitel 5 und 6 der BA schreiben")
     print("=" * 70)
 
 
